@@ -1,6 +1,6 @@
 {
   "name": "hbtv-cli",
-  "version": "1.0.1",
+  "version": "1.1.1",
   "description": "HBTV front project template",
   "keywords": [
     "front",
@@ -21,13 +21,9 @@
   },
   "dependencies": {
     "chalk": "^4.0.0",
-    "co": "^4.6.0",
-    "co-prompt": "^1.0.0",
     "commander": "^5.0.0",
-    "download-git-repo": "^3.0.2",
     "inquirer": "^7.1.0",
     "ora": "^4.0.3",
-    "progress": "^2.0.3",
     "umi-request": "^1.2.19"
   }
 }

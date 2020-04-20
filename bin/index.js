@@ -2,16 +2,17 @@
 
 'use strict';
 const inquirer = require('inquirer');
-const download = require('download-git-repo');
+const download = require('./download');
 const ora = require('ora');
 const chalk = require('chalk');
 const { fetch } = require('umi-request');
+const program = require('commander');
 
 const warning = chalk.keyword('orange');
-const projectUrl = 'https://act.hbtv.com.cn/app/projects/projects.json';
+const projectsUrl = 'https://act.hbtv.com.cn/app/projects/projects.json';
 
 function start() {
-  fetch(projectUrl)
+  fetch(projectsUrl)
     .then((res) => res.json())
     .then((projects) => {
       const options = [
@@ -24,32 +25,20 @@ function start() {
             return projects.find((project) => project.label === val);
           },
         },
-        {
-          type: 'input',
-          name: 'username',
-          message: '你的用户名',
-        },
-        {
-          type: 'password',
-          name: 'password',
-          message: '你的密码',
-        },
       ];
 
       inquirer.prompt(options).then((chooseProject) => {
-        const { username, password, project } = chooseProject;
+        const { project } = chooseProject;
         const { repository = '', afterTip = null } = project;
-
-        const url = `direct:https://${username}:${password}@${repository.split('//')[1]}`;
 
         const spinnerDownload = ora({
           color: 'yellow',
           text: `正在下载 `,
         });
         spinnerDownload.start();
-        download(url, './', { clone: true }, function (err) {
+        download(repository, function (err) {
           if (err) {
-            spinnerDownload.fail('发送错误了');
+            spinnerDownload.fail('用户名或密码错了, 或目录不空');
             return;
           }
           spinnerDownload.succeed('下载完成.');
@@ -64,4 +53,7 @@ function start() {
     });
 }
 
-start();
+program.version('1.1.0', '-v, --version').action(() => {
+  start();
+});
+program.parse(process.argv);
